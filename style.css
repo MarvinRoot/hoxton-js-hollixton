@@ -2,13 +2,47 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: sans-serif;
 }
 
 body {
     display: grid;
+    grid-template-rows: 80px 1fr 80px;
     height: 100vh;
 }
 
 header {
+    display: grid;
+    grid-template-columns: 150px 1fr;
     background-color: aqua;
+    align-items: center;
+}
+
+nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+nav ul {
+    display: inline-flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+}
+
+nav .nav-right-menu {
+    justify-content: right;
+}
+
+nav .nav-left-menu {
+    justify-content: left;
+}
+
+nav button {
+    background-color: transparent;
+    border: none;
+}
+
+nav img {
+    width: 28px;
 }

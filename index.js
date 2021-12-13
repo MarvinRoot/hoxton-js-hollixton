@@ -11,12 +11,46 @@ function renderHeader() {
     const headerNav = document.createElement('nav')
 
     const headerNavLeftMenu = document.createElement('ul')
-    const headerNavLeftMenuLi = document.createElement('li')
-    headerNavLeftMenu.append(headerNavLeftMenuLi)
+    headerNavLeftMenu.setAttribute('class', 'nav-left-menu')
+    const navBarGirls = document.createElement('li')
+    const navBarGirlsButton = document.createElement('button')
+    navBarGirlsButton.textContent = 'Girls'
+    navBarGirls.append(navBarGirlsButton)
+    const navBarGuys = document.createElement('li')
+    const navBarGuysButton = document.createElement('button')
+    navBarGuysButton.textContent = 'Guys'
+    navBarGuys.append(navBarGuysButton)
+    const navBarSale= document.createElement('li')
+    const navBarSaleButton = document.createElement('button')
+    navBarSaleButton.textContent = 'Sale'
+    navBarSale.append(navBarSaleButton)
+
+    headerNavLeftMenu.append(navBarGirls,navBarGuys,navBarSale)
     
     const headerNavRightMenu = document.createElement('ul')
-    const headerNavRightMenuLi = document.createElement('li')
-    headerNavRightMenu.append(headerNavRightMenuLi)
+    headerNavRightMenu.setAttribute('class', 'nav-right-menu')
+    const navBarSearch = document.createElement('li')
+    const navBarSearchButton = document.createElement('button')
+    const navBarSearchButtonIcon = document.createElement('img')
+    navBarSearchButtonIcon.setAttribute('src', 'https://img.icons8.com/material-outlined/50/000000/search--v1.png')
+    navBarSearchButton.append(navBarSearchButtonIcon)
+    navBarSearch.append(navBarSearchButton)
+
+    const navBarProfile = document.createElement('li')
+    const navBarProfileButton = document.createElement('button')
+    const navBarProfileButtonIcon = document.createElement('img')
+    navBarProfileButtonIcon.setAttribute('src', 'https://img.icons8.com/small/50/000000/gender-neutral-user.png')
+    navBarProfileButton.append(navBarProfileButtonIcon)
+    navBarProfile.append(navBarProfileButton)
+
+    const navBarBag = document.createElement('li')
+    const navBarBagButton = document.createElement('button')
+    const navBarBagButtonIcon = document.createElement('img')
+    navBarBagButtonIcon.setAttribute('src', 'https://img.icons8.com/material-outlined/16/000000/shopping-bag.png')
+    navBarBagButton.append(navBarBagButtonIcon)
+    navBarBag.append(navBarBagButton)
+
+    headerNavRightMenu.append(navBarSearch, navBarProfile, navBarBag)
 
     headerNav.append(headerNavLeftMenu, headerNavRightMenu)
     headerEl.append(headerH2El,headerNav)
