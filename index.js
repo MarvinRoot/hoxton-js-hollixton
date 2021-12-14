@@ -13,6 +13,7 @@ function getProducts() {
 function listenToGenderNavBar(button) {
     button.addEventListener('click', function(){
         state.selectedGender = ''
+        state.search = ''
         state.selectedGender = button.textContent
         render()
     })
@@ -34,8 +35,12 @@ function getProductsToDisplay() {
     if(state.selectedGender.toLowerCase() === 'sale') {
         productsToDisplay = productsToDisplay.filter(item =>
             item.discountedPrice
-        )}
-
+        )
+    }
+    
+    productsToDisplay = productsToDisplay.filter(item =>
+        item.name.toLowerCase().includes(state.search))
+    
     return productsToDisplay
 }
 // helps tagging the new products
@@ -231,7 +236,7 @@ function renderSearchModal() {
         event.preventDefault()
         state.search = searchModalInput.value
 
-        state.modal = ''
+        state.selectedModal = ''
         render()
     })
 
@@ -245,7 +250,7 @@ function renderSearchModal() {
 
     document.body.append(modalWrapper)
 }
-
+// render the modal for profile button
 function renderProfileModal() {
     const modalWrapper = document.createElement('div')
     modalWrapper.setAttribute('class', 'modal-wrapper')
