@@ -133,3 +133,45 @@ footer {
     padding: 1rem;
     justify-items: end;
 }
+
+.modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+
+    background-color: #00000030;
+
+    backdrop-filter: blur(2px);
+
+    display: grid;
+    place-items: center;
+}
+
+.modal {
+    display: grid;
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 2rem 2.5rem;
+    place-items: center;
+    position: relative;
+}
+
+.modal__close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    background: none;
+    border: none;
+    padding: 0.3rem;
+}
+
+.modal__input {
+    border-radius: .5rem;
+    border-color: rgb(47, 122, 192);
+    border-width: 1px;
+    margin-top: .7rem;
+    padding: .5rem;
+}

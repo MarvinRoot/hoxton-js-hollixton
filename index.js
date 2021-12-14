@@ -1,11 +1,15 @@
 const state = {
     store: [],
-    selectedGender: ''
+    selectedGender: '',
+    selectedModal: '',
+    search: ''
 }
+
+// fetch from the server
 function getProducts() {
     return fetch('http://localhost:3000/store').then(resp => resp.json())
 }
-
+// listen to the buttons in the left side of nav (Girls, Guys, Sale)
 function listenToGenderNavBar(button) {
     button.addEventListener('click', function(){
         state.selectedGender = ''
@@ -13,7 +17,7 @@ function listenToGenderNavBar(button) {
         render()
     })
 }
-
+// returns an array of the products we want to show on the main page
 function getProductsToDisplay() {
     let productsToDisplay = state.store
 
@@ -34,7 +38,7 @@ function getProductsToDisplay() {
 
     return productsToDisplay
 }
-
+// helps tagging the new products
 function isItemNew(product) {
     const daysToConsider = 11
 
@@ -49,7 +53,7 @@ function isItemNew(product) {
 
     return msForProductDate > msForTenDaysAgo
 }
-
+// renders the header
 function renderHeader() {
     const headerEl = document.createElement('header')
 
@@ -84,6 +88,10 @@ function renderHeader() {
     headerNavRightMenu.setAttribute('class', 'nav-right-menu')
     const navBarSearch = document.createElement('li')
     const navBarSearchButton = document.createElement('button')
+    navBarSearchButton.addEventListener('click', function() {
+        state.selectedModal = 'search'
+        render()
+    })
     const navBarSearchButtonIcon = document.createElement('img')
     navBarSearchButtonIcon.setAttribute('src', 'https://img.icons8.com/material-outlined/50/000000/search--v1.png')
     navBarSearchButton.append(navBarSearchButtonIcon)
@@ -91,6 +99,10 @@ function renderHeader() {
 
     const navBarProfile = document.createElement('li')
     const navBarProfileButton = document.createElement('button')
+    navBarProfileButton.addEventListener('click', function() {
+        state.selectedModal = 'profile'
+        render()
+    })
     const navBarProfileButtonIcon = document.createElement('img')
     navBarProfileButtonIcon.setAttribute('src', 'https://img.icons8.com/small/50/000000/gender-neutral-user.png')
     navBarProfileButton.append(navBarProfileButtonIcon)
@@ -98,6 +110,10 @@ function renderHeader() {
 
     const navBarBag = document.createElement('li')
     const navBarBagButton = document.createElement('button')
+    navBarBagButton.addEventListener('click', function() {
+        state.selectedModal = 'bag'
+        render()
+    })
     const navBarBagButtonIcon = document.createElement('img')
     navBarBagButtonIcon.setAttribute('src', 'https://img.icons8.com/material-outlined/16/000000/shopping-bag.png')
     navBarBagButton.append(navBarBagButtonIcon)
@@ -109,7 +125,7 @@ function renderHeader() {
     headerEl.append(headerH2El,headerNav)
     document.body.append(headerEl)
 }
-
+// renders a product item
 function renderProductItem(product, productList) {
     const productEl = document.createElement('li')
     productEl.setAttribute('class','product-item')
@@ -152,7 +168,7 @@ function renderProductItem(product, productList) {
 
     productList.append(productEl)
 }
-
+// renders the entire main section
 function renderMain() {
     const mainEl = document.createElement('main')
 
@@ -170,7 +186,7 @@ function renderMain() {
     mainEl.append(mainH3El, productList)
     document.body.append(mainEl)
 }
-
+// renders footer
 function renderFooter() {
     const footerEl = document.createElement('footer')
 
@@ -185,12 +201,62 @@ function renderFooter() {
     footerEl.append(footerH3El, footerH3ElRight)
     document.body.append(footerEl)
 }
+// render the modal for search button
+function renderSearchModal() {
+    const modalWrapper = document.createElement('div')
+    modalWrapper.setAttribute('class', 'modal-wrapper')
+    modalWrapper.addEventListener('click', function() {
+        state.selectedModal = ''
+        render()
+    })
+
+    const modalEl = document.createElement('div')
+    modalEl.setAttribute('class', 'modal')
+    modalEl.addEventListener('click', function(event) {
+        event.stopPropagation()
+    })
+
+    const closeModalBtn = document.createElement('button')
+    closeModalBtn.setAttribute('class', 'modal__close-btn')
+    closeModalBtn.textContent = 'X'
+    closeModalBtn.addEventListener('click', function() {
+        state.selectedModal = ''
+        render()
+    })
+
+    const searchModalTitle = document.createElement('h2')
+    searchModalTitle.textContent = 'Search for your favorite items!'
+    const searchModalForm = document.createElement('form')
+    searchModalForm.addEventListener('submit', function(event) {
+        event.preventDefault()
+        state.search = searchModalInput.value
+
+        state.modal = ''
+        render()
+    })
+
+    const searchModalInput = document.createElement('input')
+    searchModalInput.setAttribute('class', 'modal__input')
+    searchModalInput.setAttribute('placeholder', 'Search...')
+
+    searchModalForm.append(searchModalInput)
+    modalEl.append(closeModalBtn, searchModalTitle, searchModalForm)
+    modalWrapper.append(modalEl)
+
+    document.body.append(modalWrapper)
+}
+// picks which one of the modals to show
+function renderModal() {
+    if(state.selectedModal ===  '') return
+    if (state.selectedModal === 'search') renderSearchModal()
+}
 
 function render() {
     document.body.innerHTML = ''
     renderHeader()
     renderMain()
     renderFooter()
+    renderModal()
 }
 
 function init() {
