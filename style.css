@@ -9,6 +9,7 @@ body {
     display: grid;
     grid-template-rows: auto 1fr 80px;
     height: 100vh;
+    color: #2a3b5e;
 }
 
 header {
@@ -16,6 +17,10 @@ header {
     grid-template-columns: 150px 1fr;
     align-items: center;
     padding: 1rem;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 nav {
@@ -35,12 +40,17 @@ nav .nav-right-menu {
 }
 
 nav .nav-left-menu {
+    padding: 0rem 1rem;
     justify-content: left;
 }
 
 nav button {
     background-color: transparent;
     border: none;
+    cursor: pointer;
+}
+
+.header-title {
     cursor: pointer;
 }
 
@@ -104,4 +114,22 @@ img {
     border-top-right-radius: .5rem;
 
     font-size: .7rem;
+}
+
+footer {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    background-color: #d7d7d7;
+    color: #495775;
+}
+.footer-title {
+    display: grid;
+    padding: 1rem;
+    justify-items: start;
+}
+.footer-country {
+    display: grid;
+    padding: 1rem;
+    justify-items: end;
 }

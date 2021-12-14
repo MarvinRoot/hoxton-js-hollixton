@@ -1,9 +1,38 @@
 const state = {
-    store: []
+    store: [],
+    selectedGender: ''
 }
-
 function getProducts() {
     return fetch('http://localhost:3000/store').then(resp => resp.json())
+}
+
+function listenToGenderNavBar(button) {
+    button.addEventListener('click', function(){
+        state.selectedGender = ''
+        state.selectedGender = button.textContent
+        render()
+    })
+}
+
+function getProductsToDisplay() {
+    let productsToDisplay = state.store
+
+    if(state.selectedGender.toLowerCase() === 'girls') {
+        productsToDisplay = productsToDisplay.filter(item =>
+            state.selectedGender.toLowerCase().includes(item.type.toLowerCase()))
+    }
+
+    if(state.selectedGender.toLowerCase() === 'guys') {
+        productsToDisplay = productsToDisplay.filter(item =>
+            state.selectedGender.toLowerCase().includes(item.type.toLowerCase()))
+    }
+
+    if(state.selectedGender.toLowerCase() === 'sale') {
+        productsToDisplay = productsToDisplay.filter(item =>
+            item.discountedPrice
+        )}
+
+    return productsToDisplay
 }
 
 function isItemNew(product) {
@@ -25,7 +54,9 @@ function renderHeader() {
     const headerEl = document.createElement('header')
 
     const headerH2El = document.createElement('h2')
+    headerH2El.setAttribute('class', 'header-title')
     headerH2El.textContent = 'HOLLIXTON'
+    listenToGenderNavBar(headerH2El)
 
     const headerNav = document.createElement('nav')
 
@@ -35,14 +66,17 @@ function renderHeader() {
     const navBarGirlsButton = document.createElement('button')
     navBarGirlsButton.textContent = 'Girls'
     navBarGirls.append(navBarGirlsButton)
+    listenToGenderNavBar(navBarGirlsButton)
     const navBarGuys = document.createElement('li')
     const navBarGuysButton = document.createElement('button')
     navBarGuysButton.textContent = 'Guys'
     navBarGuys.append(navBarGuysButton)
+    listenToGenderNavBar(navBarGuysButton)
     const navBarSale= document.createElement('li')
     const navBarSaleButton = document.createElement('button')
     navBarSaleButton.textContent = 'Sale'
     navBarSale.append(navBarSaleButton)
+    listenToGenderNavBar(navBarSaleButton)
 
     headerNavLeftMenu.append(navBarGirls,navBarGuys,navBarSale)
     
@@ -129,7 +163,7 @@ function renderMain() {
     const productList = document.createElement('ul')
     productList.setAttribute('class', 'products-list')
 
-    for(const product of state.store) {
+    for(const product of getProductsToDisplay()) {
         renderProductItem(product, productList)
     }
 
@@ -141,10 +175,12 @@ function renderFooter() {
     const footerEl = document.createElement('footer')
 
     const footerH3El = document.createElement('h3')
+    footerH3El.setAttribute('class', 'footer-title')
     footerH3El.textContent = 'HOLLIXTON'
 
     const footerH3ElRight = document.createElement('h3')
-    footerH3ElRight.textContent = 'United Kingdom'
+    footerH3ElRight.setAttribute('class', 'footer-country')
+    footerH3ElRight.textContent = '🇬🇧 United Kingdom'
 
     footerEl.append(footerH3El, footerH3ElRight)
     document.body.append(footerEl)
