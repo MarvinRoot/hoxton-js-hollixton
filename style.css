@@ -141,9 +141,7 @@ footer {
     height: 100vh;
     width: 100vw;
 
-    background-color: #00000030;
-
-    backdrop-filter: blur(2px);
+    background-color: #0000006e;
 
     display: grid;
     place-items: center;
@@ -165,13 +163,31 @@ footer {
 
     background: none;
     border: none;
-    padding: 0.3rem;
+    padding: 0.6rem;
 }
 
 .modal__input {
-    border-radius: .5rem;
+    border-radius: 50px;
     border-color: rgb(47, 122, 192);
     border-width: 1px;
     margin-top: .7rem;
     padding: .5rem;
+}
+
+.modal form {
+    display: grid;
+    padding-top: 1rem;
+}
+
+.modal__input.sign-in {
+    margin-bottom: 1rem;
+}
+
+.modal__submit-button {
+    padding: 1rem;
+    border-radius: 50px;
+    border-width: 0;
+    background-color: royalblue;
+    color: white;
+    cursor: pointer;
 }

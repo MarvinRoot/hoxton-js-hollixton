@@ -245,10 +245,72 @@ function renderSearchModal() {
 
     document.body.append(modalWrapper)
 }
+
+function renderProfileModal() {
+    const modalWrapper = document.createElement('div')
+    modalWrapper.setAttribute('class', 'modal-wrapper')
+    modalWrapper.addEventListener('click', function() {
+        state.selectedModal = ''
+        render()
+    })
+
+    const modalEl = document.createElement('div')
+    modalEl.setAttribute('class', 'modal')
+    modalEl.addEventListener('click', function(event) {
+        event.stopPropagation()
+    })
+
+    const closeModalBtn = document.createElement('button')
+    closeModalBtn.setAttribute('class', 'modal__close-btn')
+    closeModalBtn.textContent = 'X'
+    closeModalBtn.addEventListener('click', function() {
+        state.selectedModal = ''
+        render()
+    })
+
+    const profileModalTitle = document.createElement('h2')
+    profileModalTitle.textContent = 'Sign In'
+    const profileModalForm = document.createElement('form')
+    profileModalForm.addEventListener('submit', function(event) {
+        event.preventDefault()
+        state.search = searchModalInput.value
+
+        state.modal = ''
+        render()
+    })
+
+    const profileModalEmailInput = document.createElement('input')
+    profileModalEmailInput.setAttribute('type', 'email')
+    profileModalEmailInput.setAttribute('class', 'modal__input sign-in')
+    profileModalEmailInput.setAttribute('name', 'email')
+    const profileModalEmailLabel = document.createElement('label')
+    profileModalEmailLabel.setAttribute('for', 'email')
+    profileModalEmailLabel.textContent = 'Email'
+
+    const profileModalPswInput = document.createElement('input')
+    profileModalPswInput.setAttribute('type', 'password')
+    profileModalPswInput.setAttribute('class', 'modal__input sign-in')
+    profileModalPswInput.setAttribute('name', 'psw')
+    const profileModalPswLabel = document.createElement('label')
+    profileModalPswLabel.setAttribute('for', 'psw')
+    profileModalPswLabel.textContent = 'Password'
+
+    const profileModalSubmitBtn = document.createElement('button')
+    profileModalSubmitBtn.setAttribute('class', 'modal__submit-button')
+    profileModalSubmitBtn.setAttribute('type', 'submit')
+    profileModalSubmitBtn.textContent = 'SIGN IN'
+
+    profileModalForm.append(profileModalEmailLabel,profileModalEmailInput,profileModalPswLabel,profileModalPswInput,profileModalSubmitBtn)
+    modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
+    modalWrapper.append(modalEl)
+
+    document.body.append(modalWrapper)
+}
 // picks which one of the modals to show
 function renderModal() {
     if(state.selectedModal ===  '') return
     if (state.selectedModal === 'search') renderSearchModal()
+    if (state.selectedModal === 'profile') renderProfileModal()
 }
 
 function render() {
