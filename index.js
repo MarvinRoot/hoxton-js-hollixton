@@ -2,6 +2,25 @@ const state = {
     store: []
 }
 
+function getProducts() {
+    return fetch('http://localhost:3000/store').then(resp => resp.json())
+}
+
+function isItemNew(product) {
+    const daysToConsider = 11
+
+    const second = 1000
+    const minute = second*60
+    const hour = minute*60
+    const day = hour*24
+
+    const msForTenDaysAgo = Date.now() - day*daysToConsider
+
+    const msForProductDate = Date.parse(product.dateEntered)
+
+    return msForProductDate > msForTenDaysAgo
+}
+
 function renderHeader() {
     const headerEl = document.createElement('header')
 
@@ -57,22 +76,64 @@ function renderHeader() {
     document.body.append(headerEl)
 }
 
+function renderProductItem(product, productList) {
+    const productEl = document.createElement('li')
+    productEl.setAttribute('class','product-item')
+
+    const productImg = document.createElement('img')
+    productImg.setAttribute('class', 'product-item__image')
+    productImg.setAttribute('src', product.image)
+    productImg.setAttribute('alt', product.name)
+
+    const productTitle = document.createElement('h4')
+    productTitle.setAttribute('class', 'product-item__title')
+    productTitle.textContent = product.name
+
+    const productPrice = document.createElement('p')
+    productPrice.setAttribute('class', 'product-item__price')
+
+    const productFullPriceSpan = document.createElement('span')
+    productFullPriceSpan.setAttribute('class','product-item__full-price')
+    productFullPriceSpan.textContent = `£${product.price}`
+
+    productPrice.append(productFullPriceSpan)
+
+    if (product.discountedPrice) {
+        productFullPriceSpan.classList.add('discounted')
+
+        const discountSpan = document.createElement('span')
+        discountSpan.setAttribute('class', 'product-item__discount')
+        discountSpan.textContent = `£${product.discountedPrice}`
+        productPrice.append(discountSpan)
+    }
+
+    productEl.append(productImg, productTitle, productPrice)
+
+    if (isItemNew(product)) {
+        const newTag = document.createElement('span')
+        newTag.setAttribute('class', 'product-item__new')
+        newTag.textContent = 'NEW!'
+        productEl.append(newTag)
+    }
+
+    productList.append(productEl)
+}
+
 function renderMain() {
     const mainEl = document.createElement('main')
 
     const mainH3El = document.createElement('h3')
+    mainH3El.setAttribute('class', 'main-title')
     mainH3El.textContent = 'Home'
 
-    const productSection = document.createElement('section')
+    const productList = document.createElement('ul')
+    productList.setAttribute('class', 'products-list')
 
-    const product = document.createElement('div')
-    const productImg = document.createElement('img')
-    const productTitle = document.createElement('p')
-    const productPrice = document.createElement('span')
-    product.append(productImg, productTitle, productPrice)
-    productSection.append(product)
+    for(const product of state.store) {
+        renderProductItem(product, productList)
+    }
 
-    mainEl.append(mainH3El, productSection)
+    mainEl.append(mainH3El, productList)
     document.body.append(mainEl)
 }
 
@@ -96,4 +157,12 @@ function render() {
     renderFooter()
 }
 
-render()
+function init() {
+    render()
+    getProducts().then(function(store) {
+        state.store = store
+        render()
+    })
+}
+
+init()

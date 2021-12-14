@@ -7,15 +7,15 @@
 
 body {
     display: grid;
-    grid-template-rows: 80px 1fr 80px;
+    grid-template-rows: auto 1fr 80px;
     height: 100vh;
 }
 
 header {
     display: grid;
     grid-template-columns: 150px 1fr;
-    background-color: aqua;
     align-items: center;
+    padding: 1rem;
 }
 
 nav {
@@ -41,8 +41,67 @@ nav .nav-left-menu {
 nav button {
     background-color: transparent;
     border: none;
+    cursor: pointer;
 }
 
 nav img {
     width: 28px;
+}
+
+main {
+    padding: 1rem;
+}
+
+img {
+    width: 100%;
+}
+
+.products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    list-style: none;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+.product-item {
+    width: 200px;
+    position: relative;
+}
+
+.product-item__title {
+    color: #1c2e53;
+}
+
+.product-item__price {
+    font-weight: bold;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: start;
+    gap: .5rem;
+}
+
+.product-item__full-price.discounted {
+    text-decoration: line-through;
+    opacity: .6;
+    font-weight: 300;
+}
+
+.product-item__discount {
+    color: rgb(143, 18, 18);
+}
+
+.product-item__new {
+    position: absolute;
+    top: -1.4rem;
+    right: 0rem;
+
+    background-color: royalblue;
+    color: white;
+    padding: .2rem;
+
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+
+    font-size: .7rem;
 }
