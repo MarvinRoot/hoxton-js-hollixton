@@ -3,7 +3,8 @@ const state = {
     selectedGender: 'home',
     selectedModal: '',
     selectedItem: null,
-    search: ''
+    search: '',
+    user: null
 }
 
 // fetch from the server
@@ -187,7 +188,7 @@ function renderProductItem(product, productList) {
 
     productList.append(productEl)
 }
-
+// renders the details of a product
 function renderItemDetails(mainEl) {
      const divEl = document.createElement('div')
         divEl.setAttribute('class', 'product-details')
@@ -212,7 +213,7 @@ function renderItemDetails(mainEl) {
         mainEl.append(divEl)
 
 }
-
+// renders the entire product list
 function renderProductList(mainEl) {
         const mainH3El = document.createElement('h3')
         mainH3El.setAttribute('class', 'main-title')
@@ -254,7 +255,7 @@ function renderFooter() {
     footerEl.append(footerH3El, footerH3ElRight)
     document.body.append(footerEl)
 }
-// render the modal for search button
+// renders the modal for search button
 function renderSearchModal() {
     const modalWrapper = document.createElement('div')
     modalWrapper.setAttribute('class', 'modal-wrapper')
@@ -298,7 +299,56 @@ function renderSearchModal() {
 
     document.body.append(modalWrapper)
 }
-// render the modal for profile button
+// renders the modal to sign up
+function renderProfileModalForSignUp(modalEl, modalWrapper) {
+    modalEl.innerHTML = ''
+            const closeModalBtn = document.createElement('button')
+            closeModalBtn.setAttribute('class', 'modal__close-btn')
+            closeModalBtn.textContent = 'X'
+            closeModalBtn.addEventListener('click', function() {
+                state.selectedModal = ''
+                render()
+            })
+
+            const profileModalTitle = document.createElement('h2')
+            profileModalTitle.textContent = 'Sign Up'
+            const profileModalForm = document.createElement('form')
+            profileModalForm.addEventListener('submit', function(event) {
+                event.preventDefault()
+                state.search = searchModalInput.value
+
+                state.modal = ''
+                render()
+            })
+
+            const profileModalEmailInput = document.createElement('input')
+            profileModalEmailInput.setAttribute('type', 'email')
+            profileModalEmailInput.setAttribute('class', 'modal__input sign-in')
+            profileModalEmailInput.setAttribute('name', 'email')
+            const profileModalEmailLabel = document.createElement('label')
+            profileModalEmailLabel.setAttribute('for', 'email')
+            profileModalEmailLabel.textContent = 'Enter Email'
+
+            const profileModalPswInput = document.createElement('input')
+            profileModalPswInput.setAttribute('type', 'password')
+            profileModalPswInput.setAttribute('class', 'modal__input sign-in')
+            profileModalPswInput.setAttribute('name', 'psw')
+            const profileModalPswLabel = document.createElement('label')
+            profileModalPswLabel.setAttribute('for', 'psw')
+            profileModalPswLabel.textContent = 'Create Password'
+
+            const profileModalSubmitBtn = document.createElement('button')
+            profileModalSubmitBtn.setAttribute('class', 'modal__submit-button')
+            profileModalSubmitBtn.setAttribute('type', 'submit')
+            profileModalSubmitBtn.textContent = 'SIGN UP'
+
+            profileModalForm.append(profileModalEmailLabel,profileModalEmailInput,profileModalPswLabel,profileModalPswInput,profileModalSubmitBtn)
+            modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
+            modalWrapper.append(modalEl)
+
+            document.body.append(modalWrapper)
+}
+// renders the modal for profile button
 function renderProfileModal() {
     const modalWrapper = document.createElement('div')
     modalWrapper.setAttribute('class', 'modal-wrapper')
@@ -353,7 +403,14 @@ function renderProfileModal() {
     profileModalSubmitBtn.setAttribute('type', 'submit')
     profileModalSubmitBtn.textContent = 'SIGN IN'
 
-    profileModalForm.append(profileModalEmailLabel,profileModalEmailInput,profileModalPswLabel,profileModalPswInput,profileModalSubmitBtn)
+    const signUpRedirect = document.createElement('p')
+    signUpRedirect.setAttribute('class', 'modal__sign-up')
+    signUpRedirect.textContent = "Don't have an account yet? Create one here!"
+    signUpRedirect.addEventListener('click', function() {
+        renderProfileModalForSignUp(modalEl, modalWrapper)
+    })
+
+    profileModalForm.append(profileModalEmailLabel,profileModalEmailInput,profileModalPswLabel,profileModalPswInput,profileModalSubmitBtn,signUpRedirect)
     modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
     modalWrapper.append(modalEl)
 

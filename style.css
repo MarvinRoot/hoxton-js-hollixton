@@ -184,6 +184,20 @@ footer {
     margin-bottom: 1rem;
 }
 
+.modal__sign-up {
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+.modal__sign-up,
+nav button:hover{
+    text-decoration: underline;
+}
+
+nav img:hover{
+    box-shadow: 0px 0px 3px black;
+}
+
 .modal__submit-button {
     padding: 1rem;
     border-radius: 50px;
