@@ -152,6 +152,12 @@
           "quantity": 1
         }
       ]
+    },
+    {
+      "firstName": "Marvin",
+      "lastName": "Aliaj",
+      "id": "marvin@mail.com",
+      "password": "marvin"
     }
   ]
 }

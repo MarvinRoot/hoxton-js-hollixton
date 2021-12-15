@@ -7,13 +7,23 @@ const state = {
     user: null
 }
 
+// adds a new user using sign-up form
+function addUser(name, lastName, email, password) {
+    return fetch('http://localhost:3000/users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({firstName: name, lastName: lastName, id: email, password: password})
+    }).then(resp => resp.json())
+}
 // fetch from the server
 function getProducts() {
     return fetch('http://localhost:3000/store').then(resp => resp.json())
 }
 // listen to the buttons in the left side of nav (Girls, Guys, Sale)
 function listenToGenderNavBar(button) {
-    button.addEventListener('click', function(){
+    button.addEventListener('click', function () {
         state.selectedGender = ''
         state.search = ''
         state.selectedItem = null
@@ -25,26 +35,26 @@ function listenToGenderNavBar(button) {
 function getProductsToDisplay() {
     let productsToDisplay = state.store
 
-    if(state.selectedGender.toLowerCase() === 'girls') {
+    if (state.selectedGender.toLowerCase() === 'girls') {
         productsToDisplay = productsToDisplay.filter(item =>
             state.selectedGender.toLowerCase().includes(item.type.toLowerCase()))
     }
 
-    if(state.selectedGender.toLowerCase() === 'guys') {
+    if (state.selectedGender.toLowerCase() === 'guys') {
         productsToDisplay = productsToDisplay.filter(item =>
             state.selectedGender.toLowerCase().includes(item.type.toLowerCase()))
     }
 
-    if(state.selectedGender.toLowerCase() === 'sale') {
+    if (state.selectedGender.toLowerCase() === 'sale') {
         productsToDisplay = productsToDisplay.filter(item =>
             item.discountedPrice
         )
     }
-    
+
     productsToDisplay = productsToDisplay.filter(item =>
         item.name.toLowerCase().includes(state.search.toLowerCase())
     )
-    
+
     return productsToDisplay
 }
 // helps tagging the new products
@@ -52,11 +62,11 @@ function isItemNew(product) {
     const daysToConsider = 11
 
     const second = 1000
-    const minute = second*60
-    const hour = minute*60
-    const day = hour*24
+    const minute = second * 60
+    const hour = minute * 60
+    const day = hour * 24
 
-    const msForTenDaysAgo = Date.now() - day*daysToConsider
+    const msForTenDaysAgo = Date.now() - day * daysToConsider
 
     const msForProductDate = Date.parse(product.dateEntered)
 
@@ -69,7 +79,7 @@ function renderHeader() {
     const headerH2El = document.createElement('h2')
     headerH2El.setAttribute('class', 'header-title')
     headerH2El.textContent = 'HOLLIXTON'
-    headerH2El.addEventListener('click', function(){
+    headerH2El.addEventListener('click', function () {
         state.selectedGender = ''
         state.search = ''
         state.selectedItem = null
@@ -91,19 +101,19 @@ function renderHeader() {
     navBarGuysButton.textContent = 'Guys'
     navBarGuys.append(navBarGuysButton)
     listenToGenderNavBar(navBarGuysButton)
-    const navBarSale= document.createElement('li')
+    const navBarSale = document.createElement('li')
     const navBarSaleButton = document.createElement('button')
     navBarSaleButton.textContent = 'Sale'
     navBarSale.append(navBarSaleButton)
     listenToGenderNavBar(navBarSaleButton)
 
-    headerNavLeftMenu.append(navBarGirls,navBarGuys,navBarSale)
-    
+    headerNavLeftMenu.append(navBarGirls, navBarGuys, navBarSale)
+
     const headerNavRightMenu = document.createElement('ul')
     headerNavRightMenu.setAttribute('class', 'nav-right-menu')
     const navBarSearch = document.createElement('li')
     const navBarSearchButton = document.createElement('button')
-    navBarSearchButton.addEventListener('click', function() {
+    navBarSearchButton.addEventListener('click', function () {
         state.selectedModal = 'search'
         render()
     })
@@ -114,7 +124,7 @@ function renderHeader() {
 
     const navBarProfile = document.createElement('li')
     const navBarProfileButton = document.createElement('button')
-    navBarProfileButton.addEventListener('click', function() {
+    navBarProfileButton.addEventListener('click', function () {
         state.selectedModal = 'profile'
         render()
     })
@@ -125,7 +135,7 @@ function renderHeader() {
 
     const navBarBag = document.createElement('li')
     const navBarBagButton = document.createElement('button')
-    navBarBagButton.addEventListener('click', function() {
+    navBarBagButton.addEventListener('click', function () {
         state.selectedModal = 'bag'
         render()
     })
@@ -137,15 +147,15 @@ function renderHeader() {
     headerNavRightMenu.append(navBarSearch, navBarProfile, navBarBag)
 
     headerNav.append(headerNavLeftMenu, headerNavRightMenu)
-    headerEl.append(headerH2El,headerNav)
+    headerEl.append(headerH2El, headerNav)
     document.body.append(headerEl)
 }
 // renders a product item
 function renderProductItem(product, productList) {
     const productEl = document.createElement('li')
-    productEl.setAttribute('class','product-item')
+    productEl.setAttribute('class', 'product-item')
 
-    productEl.addEventListener('click', function() {
+    productEl.addEventListener('click', function () {
         state.selectedItem = product
         render()
     })
@@ -163,7 +173,7 @@ function renderProductItem(product, productList) {
     productPrice.setAttribute('class', 'product-item__price')
 
     const productFullPriceSpan = document.createElement('span')
-    productFullPriceSpan.setAttribute('class','product-item__full-price')
+    productFullPriceSpan.setAttribute('class', 'product-item__full-price')
     productFullPriceSpan.textContent = `£${product.price}`
 
     productPrice.append(productFullPriceSpan)
@@ -190,49 +200,49 @@ function renderProductItem(product, productList) {
 }
 // renders the details of a product
 function renderItemDetails(mainEl) {
-     const divEl = document.createElement('div')
-        divEl.setAttribute('class', 'product-details')
+    const divEl = document.createElement('div')
+    divEl.setAttribute('class', 'product-details')
 
-        const imgEl = document.createElement('img')
-        imgEl.setAttribute('class', 'product-details__image')
-        imgEl.setAttribute('src', state.selectedItem.image)
+    const imgEl = document.createElement('img')
+    imgEl.setAttribute('class', 'product-details__image')
+    imgEl.setAttribute('src', state.selectedItem.image)
 
-        const titleEl = document.createElement('h2')
-        titleEl.setAttribute('class', 'product-details__title')
-        titleEl.textContent = state.selectedItem.name
+    const titleEl = document.createElement('h2')
+    titleEl.setAttribute('class', 'product-details__title')
+    titleEl.textContent = state.selectedItem.name
 
-        const addToBagBtnEl = document.createElement('button')
-        addToBagBtnEl.setAttribute('class', 'product-details__add-to-bag')
-        addToBagBtnEl.textContent = 'Add To Bag'
-        addToBagBtnEl.addEventListener('click', function() {
-            state.selectedItem = null
-            render()
-        })
+    const addToBagBtnEl = document.createElement('button')
+    addToBagBtnEl.setAttribute('class', 'product-details__add-to-bag')
+    addToBagBtnEl.textContent = 'Add To Bag'
+    addToBagBtnEl.addEventListener('click', function () {
+        state.selectedItem = null
+        render()
+    })
 
-        divEl.append(imgEl, titleEl, addToBagBtnEl)
-        mainEl.append(divEl)
+    divEl.append(imgEl, titleEl, addToBagBtnEl)
+    mainEl.append(divEl)
 
 }
 // renders the entire product list
 function renderProductList(mainEl) {
-        const mainH3El = document.createElement('h3')
-        mainH3El.setAttribute('class', 'main-title')
-        mainH3El.textContent = state.selectedGender.toUpperCase()
+    const mainH3El = document.createElement('h3')
+    mainH3El.setAttribute('class', 'main-title')
+    mainH3El.textContent = state.selectedGender.toUpperCase()
 
-        const productList = document.createElement('ul')
-        productList.setAttribute('class', 'products-list')
+    const productList = document.createElement('ul')
+    productList.setAttribute('class', 'products-list')
 
-        for(const product of getProductsToDisplay()) {
-            renderProductItem(product, productList)
-        }
+    for (const product of getProductsToDisplay()) {
+        renderProductItem(product, productList)
+    }
 
-        mainEl.append(mainH3El, productList)
+    mainEl.append(mainH3El, productList)
 }
 // renders the entire main section
 function renderMain() {
     const mainEl = document.createElement('main')
 
-    if(state.selectedItem !== null){
+    if (state.selectedItem !== null) {
         renderItemDetails(mainEl)
     } else {
         renderProductList(mainEl)
@@ -259,21 +269,21 @@ function renderFooter() {
 function renderSearchModal() {
     const modalWrapper = document.createElement('div')
     modalWrapper.setAttribute('class', 'modal-wrapper')
-    modalWrapper.addEventListener('click', function() {
+    modalWrapper.addEventListener('click', function () {
         state.selectedModal = ''
         render()
     })
 
     const modalEl = document.createElement('div')
     modalEl.setAttribute('class', 'modal')
-    modalEl.addEventListener('click', function(event) {
+    modalEl.addEventListener('click', function (event) {
         event.stopPropagation()
     })
 
     const closeModalBtn = document.createElement('button')
     closeModalBtn.setAttribute('class', 'modal__close-btn')
     closeModalBtn.textContent = 'X'
-    closeModalBtn.addEventListener('click', function() {
+    closeModalBtn.addEventListener('click', function () {
         state.selectedModal = ''
         render()
     })
@@ -281,7 +291,7 @@ function renderSearchModal() {
     const searchModalTitle = document.createElement('h2')
     searchModalTitle.textContent = 'Search for your favorite items!'
     const searchModalForm = document.createElement('form')
-    searchModalForm.addEventListener('submit', function(event) {
+    searchModalForm.addEventListener('submit', function (event) {
         event.preventDefault()
         state.search = searchModalInput.value
 
@@ -302,71 +312,91 @@ function renderSearchModal() {
 // renders the modal to sign up
 function renderProfileModalForSignUp(modalEl, modalWrapper) {
     modalEl.innerHTML = ''
-            const closeModalBtn = document.createElement('button')
-            closeModalBtn.setAttribute('class', 'modal__close-btn')
-            closeModalBtn.textContent = 'X'
-            closeModalBtn.addEventListener('click', function() {
-                state.selectedModal = ''
-                render()
-            })
+    const closeModalBtn = document.createElement('button')
+    closeModalBtn.setAttribute('class', 'modal__close-btn')
+    closeModalBtn.textContent = 'X'
+    closeModalBtn.addEventListener('click', function () {
+        state.selectedModal = ''
+        render()
+    })
 
-            const profileModalTitle = document.createElement('h2')
-            profileModalTitle.textContent = 'Sign Up'
-            const profileModalForm = document.createElement('form')
-            profileModalForm.addEventListener('submit', function(event) {
-                event.preventDefault()
-                state.search = searchModalInput.value
+    const profileModalTitle = document.createElement('h2')
+    profileModalTitle.textContent = 'Sign Up'
+    const profileModalForm = document.createElement('form')
+    profileModalForm.addEventListener('submit', function (event) {
+        event.preventDefault()
+        state.search = searchModalInput.value
 
-                state.modal = ''
-                render()
-            })
+        state.selectedModal = ''
+        render()
+    })
 
-            const profileModalEmailInput = document.createElement('input')
-            profileModalEmailInput.setAttribute('type', 'email')
-            profileModalEmailInput.setAttribute('class', 'modal__input sign-in')
-            profileModalEmailInput.setAttribute('name', 'email')
-            const profileModalEmailLabel = document.createElement('label')
-            profileModalEmailLabel.setAttribute('for', 'email')
-            profileModalEmailLabel.textContent = 'Enter Email'
+    const profileModalNameInput = document.createElement('input')
+    profileModalNameInput.setAttribute('class', 'modal__input sign-in')
+    profileModalNameInput.setAttribute('name', 'name')
+    profileModalNameInput.setAttribute('type', 'text')
+    const profileModalNameLabel = document.createElement('label')
+    profileModalNameLabel.setAttribute('for', 'name')
+    profileModalNameLabel.textContent = 'Enter your name'
 
-            const profileModalPswInput = document.createElement('input')
-            profileModalPswInput.setAttribute('type', 'password')
-            profileModalPswInput.setAttribute('class', 'modal__input sign-in')
-            profileModalPswInput.setAttribute('name', 'psw')
-            const profileModalPswLabel = document.createElement('label')
-            profileModalPswLabel.setAttribute('for', 'psw')
-            profileModalPswLabel.textContent = 'Create Password'
+    const profileModalLastNameInput = document.createElement('input')
+    profileModalLastNameInput.setAttribute('class', 'modal__input sign-in')
+    profileModalLastNameInput.setAttribute('name', 'last-name')
+    profileModalLastNameInput.setAttribute('type', 'text')
+    const profileModalLastNameLabel = document.createElement('label')
+    profileModalLastNameLabel.setAttribute('for', 'last-name')
+    profileModalLastNameLabel.textContent = 'Enter your last name'
 
-            const profileModalSubmitBtn = document.createElement('button')
-            profileModalSubmitBtn.setAttribute('class', 'modal__submit-button')
-            profileModalSubmitBtn.setAttribute('type', 'submit')
-            profileModalSubmitBtn.textContent = 'SIGN UP'
+    const profileModalEmailInput = document.createElement('input')
+    profileModalEmailInput.setAttribute('type', 'email')
+    profileModalEmailInput.setAttribute('class', 'modal__input sign-in')
+    profileModalEmailInput.setAttribute('name', 'email')
+    const profileModalEmailLabel = document.createElement('label')
+    profileModalEmailLabel.setAttribute('for', 'email')
+    profileModalEmailLabel.textContent = 'Enter Email'
 
-            profileModalForm.append(profileModalEmailLabel,profileModalEmailInput,profileModalPswLabel,profileModalPswInput,profileModalSubmitBtn)
-            modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
-            modalWrapper.append(modalEl)
+    const profileModalPswInput = document.createElement('input')
+    profileModalPswInput.setAttribute('type', 'password')
+    profileModalPswInput.setAttribute('class', 'modal__input sign-in')
+    profileModalPswInput.setAttribute('name', 'psw')
+    const profileModalPswLabel = document.createElement('label')
+    profileModalPswLabel.setAttribute('for', 'psw')
+    profileModalPswLabel.textContent = 'Create Password'
 
-            document.body.append(modalWrapper)
+    const profileModalSubmitBtn = document.createElement('button')
+    profileModalSubmitBtn.setAttribute('class', 'modal__submit-button')
+    profileModalSubmitBtn.setAttribute('type', 'submit')
+    profileModalSubmitBtn.textContent = 'SIGN UP'
+    profileModalSubmitBtn.addEventListener('click', event => {
+        event.preventDefault()
+        addUser(profileModalNameInput.value, profileModalLastNameInput.value, profileModalEmailInput.value, profileModalPswInput.value)
+    })
+
+    profileModalForm.append(profileModalNameLabel, profileModalNameInput, profileModalLastNameLabel, profileModalLastNameInput, profileModalEmailLabel, profileModalEmailInput, profileModalPswLabel, profileModalPswInput, profileModalSubmitBtn)
+    modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
+    modalWrapper.append(modalEl)
+
+    document.body.append(modalWrapper)
 }
 // renders the modal for profile button
 function renderProfileModal() {
     const modalWrapper = document.createElement('div')
     modalWrapper.setAttribute('class', 'modal-wrapper')
-    modalWrapper.addEventListener('click', function() {
+    modalWrapper.addEventListener('click', function () {
         state.selectedModal = ''
         render()
     })
 
     const modalEl = document.createElement('div')
     modalEl.setAttribute('class', 'modal')
-    modalEl.addEventListener('click', function(event) {
+    modalEl.addEventListener('click', function (event) {
         event.stopPropagation()
     })
 
     const closeModalBtn = document.createElement('button')
     closeModalBtn.setAttribute('class', 'modal__close-btn')
     closeModalBtn.textContent = 'X'
-    closeModalBtn.addEventListener('click', function() {
+    closeModalBtn.addEventListener('click', function () {
         state.selectedModal = ''
         render()
     })
@@ -374,7 +404,7 @@ function renderProfileModal() {
     const profileModalTitle = document.createElement('h2')
     profileModalTitle.textContent = 'Sign In'
     const profileModalForm = document.createElement('form')
-    profileModalForm.addEventListener('submit', function(event) {
+    profileModalForm.addEventListener('submit', function (event) {
         event.preventDefault()
         state.search = searchModalInput.value
 
@@ -406,11 +436,11 @@ function renderProfileModal() {
     const signUpRedirect = document.createElement('p')
     signUpRedirect.setAttribute('class', 'modal__sign-up')
     signUpRedirect.textContent = "Don't have an account yet? Create one here!"
-    signUpRedirect.addEventListener('click', function() {
+    signUpRedirect.addEventListener('click', function () {
         renderProfileModalForSignUp(modalEl, modalWrapper)
     })
 
-    profileModalForm.append(profileModalEmailLabel,profileModalEmailInput,profileModalPswLabel,profileModalPswInput,profileModalSubmitBtn,signUpRedirect)
+    profileModalForm.append(profileModalEmailLabel, profileModalEmailInput, profileModalPswLabel, profileModalPswInput, profileModalSubmitBtn, signUpRedirect)
     modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
     modalWrapper.append(modalEl)
 
@@ -418,7 +448,7 @@ function renderProfileModal() {
 }
 // picks which one of the modals to show
 function renderModal() {
-    if(state.selectedModal ===  '') return
+    if (state.selectedModal === '') return
     if (state.selectedModal === 'search') renderSearchModal()
     if (state.selectedModal === 'profile') renderProfileModal()
 }
@@ -433,7 +463,7 @@ function render() {
 
 function init() {
     render()
-    getProducts().then(function(store) {
+    getProducts().then(function (store) {
         state.store = store
         render()
     })
