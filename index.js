@@ -1,7 +1,8 @@
 const state = {
     store: [],
-    selectedGender: '',
+    selectedGender: 'home',
     selectedModal: '',
+    selectedItem: null,
     search: ''
 }
 
@@ -14,6 +15,7 @@ function listenToGenderNavBar(button) {
     button.addEventListener('click', function(){
         state.selectedGender = ''
         state.search = ''
+        state.selectedItem = null
         state.selectedGender = button.textContent
         render()
     })
@@ -39,7 +41,8 @@ function getProductsToDisplay() {
     }
     
     productsToDisplay = productsToDisplay.filter(item =>
-        item.name.toLowerCase().includes(state.search))
+        item.name.toLowerCase().includes(state.search.toLowerCase())
+    )
     
     return productsToDisplay
 }
@@ -65,7 +68,13 @@ function renderHeader() {
     const headerH2El = document.createElement('h2')
     headerH2El.setAttribute('class', 'header-title')
     headerH2El.textContent = 'HOLLIXTON'
-    listenToGenderNavBar(headerH2El)
+    headerH2El.addEventListener('click', function(){
+        state.selectedGender = ''
+        state.search = ''
+        state.selectedItem = null
+        state.selectedGender = 'home'
+        render()
+    })
 
     const headerNav = document.createElement('nav')
 
@@ -135,6 +144,11 @@ function renderProductItem(product, productList) {
     const productEl = document.createElement('li')
     productEl.setAttribute('class','product-item')
 
+    productEl.addEventListener('click', function() {
+        state.selectedItem = product
+        render()
+    })
+
     const productImg = document.createElement('img')
     productImg.setAttribute('class', 'product-item__image')
     productImg.setAttribute('src', product.image)
@@ -173,22 +187,56 @@ function renderProductItem(product, productList) {
 
     productList.append(productEl)
 }
+
+function renderItemDetails(mainEl) {
+     const divEl = document.createElement('div')
+        divEl.setAttribute('class', 'product-details')
+
+        const imgEl = document.createElement('img')
+        imgEl.setAttribute('class', 'product-details__image')
+        imgEl.setAttribute('src', state.selectedItem.image)
+
+        const titleEl = document.createElement('h2')
+        titleEl.setAttribute('class', 'product-details__title')
+        titleEl.textContent = state.selectedItem.name
+
+        const addToBagBtnEl = document.createElement('button')
+        addToBagBtnEl.setAttribute('class', 'product-details__add-to-bag')
+        addToBagBtnEl.textContent = 'Add To Bag'
+        addToBagBtnEl.addEventListener('click', function() {
+            state.selectedItem = null
+            render()
+        })
+
+        divEl.append(imgEl, titleEl, addToBagBtnEl)
+        mainEl.append(divEl)
+
+}
+
+function renderProductList(mainEl) {
+        const mainH3El = document.createElement('h3')
+        mainH3El.setAttribute('class', 'main-title')
+        mainH3El.textContent = state.selectedGender.toUpperCase()
+
+        const productList = document.createElement('ul')
+        productList.setAttribute('class', 'products-list')
+
+        for(const product of getProductsToDisplay()) {
+            renderProductItem(product, productList)
+        }
+
+        mainEl.append(mainH3El, productList)
+}
 // renders the entire main section
 function renderMain() {
     const mainEl = document.createElement('main')
 
-    const mainH3El = document.createElement('h3')
-    mainH3El.setAttribute('class', 'main-title')
-    mainH3El.textContent = 'Home'
-
-    const productList = document.createElement('ul')
-    productList.setAttribute('class', 'products-list')
-
-    for(const product of getProductsToDisplay()) {
-        renderProductItem(product, productList)
+    if(state.selectedItem !== null){
+        renderItemDetails(mainEl)
+    } else {
+        renderProductList(mainEl)
     }
 
-    mainEl.append(mainH3El, productList)
     document.body.append(mainEl)
 }
 // renders footer
