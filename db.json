@@ -157,7 +157,28 @@
       "firstName": "Marvin",
       "lastName": "Aliaj",
       "id": "marvin@mail.com",
-      "password": "marvin"
+      "password": "marvin",
+      "bag": [
+        {
+          "id": 1,
+          "type": "Guys",
+          "name": "Crewneck T-Shirt 3-Pack",
+          "image": "https://img.hollisterco.com/is/image/anf/KIC_324-1085-0123-100_prod1",
+          "price": 40,
+          "discountedPrice": 21.99,
+          "dateEntered": "2021/12/10",
+          "stock": 10
+        },
+        {
+          "id": 3,
+          "type": "Girls",
+          "name": "Gilly Hicks Cozy Joggers",
+          "image": "https://img.hollisterco.com/is/image/anf/KIC_346-1252-0485-116_prod1",
+          "price": 27,
+          "dateEntered": "2021/12/11",
+          "stock": 15
+        }
+      ]
     }
   ]
 }

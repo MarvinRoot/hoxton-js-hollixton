@@ -50,6 +50,16 @@ nav button {
     cursor: pointer;
 }
 
+.product-item__bag-tag {
+    position: absolute;
+    background-color: red;
+    color: white;
+    padding: .2rem .4rem;
+    border-radius: 50%;
+    right: .5rem;
+    top: .5rem;
+}
+
 .header-title {
     cursor: pointer;
 }

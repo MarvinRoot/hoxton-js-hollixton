@@ -1,23 +1,55 @@
 const state = {
     store: [],
+    users: [],
     selectedGender: 'home',
     selectedModal: '',
     selectedItem: null,
     search: '',
-    user: null
+    user: null,
+    bag: []
 }
-
+// adds items to the bag
+function addItemToBag() {
+    //update state
+    state.bag.push(state.selectedItem)
+    //update server with PATCH
+    return fetch(`http://localhost:3000/users/${state.user.id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({bag: state.bag})
+    }).then(resp => resp.json())
+}
+// fetch users from the server
+function getUsers() {
+    return fetch('http://localhost:3000/users').then(resp => resp.json())
+    .then(users => state.users = users)
+}
+// checks if the email and password match the user's input in sign-in form
+function signInUser(email, password) {
+    for(const user of state.users){
+        if(user.id === email && user.password === password) {
+            state.user = user
+            // localStorage.setItem('email', user.id);
+            // localStorage.setItem('password', user.password)
+        }
+    }
+}
 // adds a new user using sign-up form
 function addUser(name, lastName, email, password) {
+
+    state.users.push({firstName: name, lastName: lastName, id: email, password: password})
+
     return fetch('http://localhost:3000/users', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({firstName: name, lastName: lastName, id: email, password: password})
+        body: JSON.stringify({firstName: name, lastName: lastName, id: email, password: password, bag: []})
     }).then(resp => resp.json())
 }
-// fetch from the server
+// fetch products from the server
 function getProducts() {
     return fetch('http://localhost:3000/store').then(resp => resp.json())
 }
@@ -140,8 +172,13 @@ function renderHeader() {
         render()
     })
     const navBarBagButtonIcon = document.createElement('img')
-    navBarBagButtonIcon.setAttribute('src', 'https://img.icons8.com/material-outlined/16/000000/shopping-bag.png')
-    navBarBagButton.append(navBarBagButtonIcon)
+    navBarBagButtonIcon.setAttribute('src', 'https://img.icons8.com/material-outlined/24/000000/shopping-bag--v1.png')
+    const bagTag = document.createElement('span')
+    if(state.user !== null){
+        bagTag.setAttribute('class', 'product-item__bag-tag')
+        bagTag.textContent = '0'
+    }
+    navBarBagButton.append(navBarBagButtonIcon, bagTag)
     navBarBag.append(navBarBagButton)
 
     headerNavRightMenu.append(navBarSearch, navBarProfile, navBarBag)
@@ -210,11 +247,12 @@ function renderItemDetails(mainEl) {
     const titleEl = document.createElement('h2')
     titleEl.setAttribute('class', 'product-details__title')
     titleEl.textContent = state.selectedItem.name
-
     const addToBagBtnEl = document.createElement('button')
     addToBagBtnEl.setAttribute('class', 'product-details__add-to-bag')
     addToBagBtnEl.textContent = 'Add To Bag'
     addToBagBtnEl.addEventListener('click', function () {
+        if(state.user !== null) addItemToBag()
+        state.selectedModal = 'profile'
         state.selectedItem = null
         render()
     })
@@ -401,56 +439,107 @@ function renderProfileModal() {
         render()
     })
 
-    const profileModalTitle = document.createElement('h2')
-    profileModalTitle.textContent = 'Sign In'
-    const profileModalForm = document.createElement('form')
-    profileModalForm.addEventListener('submit', function (event) {
-        event.preventDefault()
-        state.search = searchModalInput.value
+    
+        const profileModalTitle = document.createElement('h2')
+        profileModalTitle.textContent = 'Sign In'
+        const profileModalForm = document.createElement('form')
+        profileModalForm.addEventListener('submit', function (event) {
+            event.preventDefault()
+            //state.search = searchModalInput.value
 
-        state.modal = ''
-        render()
-    })
+            state.selectedModal = ''
+            render()
+        })
 
-    const profileModalEmailInput = document.createElement('input')
-    profileModalEmailInput.setAttribute('type', 'email')
-    profileModalEmailInput.setAttribute('class', 'modal__input sign-in')
-    profileModalEmailInput.setAttribute('name', 'email')
-    const profileModalEmailLabel = document.createElement('label')
-    profileModalEmailLabel.setAttribute('for', 'email')
-    profileModalEmailLabel.textContent = 'Email'
+        const profileModalEmailInput = document.createElement('input')
+        profileModalEmailInput.setAttribute('type', 'email')
+        profileModalEmailInput.setAttribute('class', 'modal__input sign-in')
+        profileModalEmailInput.setAttribute('name', 'email')
+        const profileModalEmailLabel = document.createElement('label')
+        profileModalEmailLabel.setAttribute('for', 'email')
+        profileModalEmailLabel.textContent = 'Email'
 
-    const profileModalPswInput = document.createElement('input')
-    profileModalPswInput.setAttribute('type', 'password')
-    profileModalPswInput.setAttribute('class', 'modal__input sign-in')
-    profileModalPswInput.setAttribute('name', 'psw')
-    const profileModalPswLabel = document.createElement('label')
-    profileModalPswLabel.setAttribute('for', 'psw')
-    profileModalPswLabel.textContent = 'Password'
+        const profileModalPswInput = document.createElement('input')
+        profileModalPswInput.setAttribute('type', 'password')
+        profileModalPswInput.setAttribute('class', 'modal__input sign-in')
+        profileModalPswInput.setAttribute('name', 'psw')
+        const profileModalPswLabel = document.createElement('label')
+        profileModalPswLabel.setAttribute('for', 'psw')
+        profileModalPswLabel.textContent = 'Password'
 
-    const profileModalSubmitBtn = document.createElement('button')
-    profileModalSubmitBtn.setAttribute('class', 'modal__submit-button')
-    profileModalSubmitBtn.setAttribute('type', 'submit')
-    profileModalSubmitBtn.textContent = 'SIGN IN'
+        const profileModalSubmitBtn = document.createElement('button')
+        profileModalSubmitBtn.setAttribute('class', 'modal__submit-button')
+        profileModalSubmitBtn.setAttribute('type', 'submit')
+        profileModalSubmitBtn.textContent = 'SIGN IN'
+        profileModalSubmitBtn.addEventListener('click', function(){
+            signInUser(profileModalEmailInput.value, profileModalPswInput.value)
+            state.selectedModal = ''
+            render()
+        })
 
-    const signUpRedirect = document.createElement('p')
-    signUpRedirect.setAttribute('class', 'modal__sign-up')
-    signUpRedirect.textContent = "Don't have an account yet? Create one here!"
-    signUpRedirect.addEventListener('click', function () {
-        renderProfileModalForSignUp(modalEl, modalWrapper)
-    })
+        const signUpRedirect = document.createElement('p')
+        signUpRedirect.setAttribute('class', 'modal__sign-up')
+        signUpRedirect.textContent = "Don't have an account yet? Create one here!"
+        signUpRedirect.addEventListener('click', function () {
+            renderProfileModalForSignUp(modalEl, modalWrapper)
+        })
 
-    profileModalForm.append(profileModalEmailLabel, profileModalEmailInput, profileModalPswLabel, profileModalPswInput, profileModalSubmitBtn, signUpRedirect)
-    modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
+        profileModalForm.append(profileModalEmailLabel, profileModalEmailInput, profileModalPswLabel, profileModalPswInput, profileModalSubmitBtn, signUpRedirect)
+        modalEl.append(closeModalBtn, profileModalTitle, profileModalForm)
+    
     modalWrapper.append(modalEl)
 
     document.body.append(modalWrapper)
 }
+// renders the modal to log out
+function renderProfileModalWhenSignedIn() {
+    const modalWrapper = document.createElement('div')
+    modalWrapper.setAttribute('class', 'modal-wrapper')
+    modalWrapper.addEventListener('click', function () {
+        state.selectedModal = ''
+        render()
+    })
+
+    const modalEl = document.createElement('div')
+    modalEl.setAttribute('class', 'modal')
+    modalEl.addEventListener('click', function (event) {
+        event.stopPropagation()
+    })
+
+    const closeModalBtn = document.createElement('button')
+    closeModalBtn.setAttribute('class', 'modal__close-btn')
+    closeModalBtn.textContent = 'X'
+    closeModalBtn.addEventListener('click', function () {
+        state.selectedModal = ''
+        render()
+    })
+
+    const profileModalTitle = document.createElement('h2')
+    profileModalTitle.textContent = `${state.user.firstName} ${state.user.lastName}`
+    const profileModalLogOut = document.createElement('p')
+    profileModalLogOut.setAttribute('class', 'modal__sign-up')
+    profileModalLogOut.textContent = "Log Out"
+    profileModalLogOut.addEventListener('click', function() {
+        state.user = null
+        state.selectedModal = ''
+        render()
+    })
+
+    
+    modalEl.append(closeModalBtn, profileModalTitle, profileModalLogOut)
+    modalWrapper.append(modalEl)
+
+    document.body.append(modalWrapper)
+}
+
+
 // picks which one of the modals to show
 function renderModal() {
     if (state.selectedModal === '') return
     if (state.selectedModal === 'search') renderSearchModal()
-    if (state.selectedModal === 'profile') renderProfileModal()
+    if (state.user !== null && state.selectedModal === 'profile') renderProfileModalWhenSignedIn()
+    if (state.user == null && state.selectedModal === 'profile') renderProfileModal()
+    
 }
 
 function render() {
@@ -467,6 +556,7 @@ function init() {
         state.store = store
         render()
     })
+    getUsers()
 }
 
 init()
